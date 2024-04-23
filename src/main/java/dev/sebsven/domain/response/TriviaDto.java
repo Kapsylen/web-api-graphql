@@ -1,8 +1,8 @@
-package dev.sebsven.application.response;
+package dev.sebsven.domain.response;
 
 import java.util.List;
 
-public record Trivia (
+public record TriviaDto(
         String type,
         String difficulty,
         String category,

@@ -1,0 +1,17 @@
+type TriviaApi {
+    id: ID!
+    type: String!
+    difficulty: String!
+    category: String!
+    question: String!
+    correctAnswer: String
+    incorrectAnswers: [String]
+
+}
+
+type Query {
+    triviaById(id: ID!): TriviaApi
+    incorrectAnswers(id: ID): [String]
+    allTrivia: [TriviaApi]
+    triviaByType(type: String): [TriviaApi]
+}

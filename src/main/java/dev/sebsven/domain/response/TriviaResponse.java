@@ -1,9 +1,9 @@
-package dev.sebsven.application.response;
+package dev.sebsven.domain.response;
 
 import java.util.List;
 
 public record TriviaResponse(
         int response_code,
-        List<Trivia> results
+        List<TriviaDto> results
 ) {
 }

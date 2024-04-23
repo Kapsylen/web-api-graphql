@@ -11,7 +11,5 @@ CREATE TABLE trivia
 CREATE TABLE incorrect_answers
 (
     id               SERIAL PRIMARY KEY,
-    trivia_id        INTEGER,
-    incorrect_answer VARCHAR(255),
-    FOREIGN KEY (trivia_id) REFERENCES trivia (id)
+    incorrect_answer VARCHAR(255)
 );
