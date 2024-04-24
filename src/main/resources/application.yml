@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pg-db
+    hikari:
+      username: pg-user
+      password: pg-pass
+  jpa:
+    hibernate:
+      ddl-auto: update
+  graphql:
+    graphiql:
+      enabled: true
+      path: /graphiql       # Graphql UI host/graphiql

@@ -18,13 +18,12 @@ public record TriviaApi(
     public static TriviaApi toTriviaApi(Trivia trivia) {
         return new TriviaApi(
                 trivia.getId(),
-                trivia.getCategory(),
                 trivia.getType(),
+                trivia.getDifficulty(),
                 trivia.getCategory(),
                 trivia.getQuestion(),
                 trivia.getCorrectAnswer(),
                 trivia.getIncorrectAnswers().stream().map(IncorrectAnswer::getIncorrectAnswer).toList()
         );
     }
-
 }

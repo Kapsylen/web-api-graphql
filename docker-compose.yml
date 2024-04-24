@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: pg-user
+      POSTGRES_PASSWORD: pg-pass
+      POSTGRES_DB: pg-db

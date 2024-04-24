@@ -25,7 +25,7 @@ public class TriviaService {
         this.triviaRepository = triviaRepository;
     }
 
-    private TriviaResponse getAll() {
+    private TriviaResponse getTriviaFromExternalApi() {
         return triviaClientBuilder
                 .baseUrl("https://opentdb.com/api.php?amount=10&category=17&difficulty=easy")
                 .build()
@@ -36,12 +36,10 @@ public class TriviaService {
     }
 
     public void saveAll() {
-        var response = getAll();
-        var triviaEntities = response.
-                results().stream().map(
-                Trivia::toTrivia
-        ).toList();
-        triviaRepository.saveAll(triviaEntities);
+        if(triviaRepository.findAll().isEmpty()){
+            var triviaEntities = getTriviaFromExternalApi().results().stream().map(Trivia::toTrivia).toList();
+            triviaRepository.saveAll(triviaEntities);
+        }
     }
 
     public Optional<TriviaApi> triviaById(Integer id) {
