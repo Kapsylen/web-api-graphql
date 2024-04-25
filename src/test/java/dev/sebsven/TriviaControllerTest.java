@@ -132,7 +132,7 @@ public class TriviaControllerTest {
                 .build();
         Mockito.when(service.save(Mockito.any())).thenReturn(trivia);
 
-        String mutation = "mutation {newTrivia(triviaInputApi: {type: \"multiple\", difficulty: \"medium\", category: \"Science &amp; Nature\", question: \"How many planets are in our Solar System?\"}) {type difficulty category question}}";
+        String mutation = "mutation {newTrivia(triviaInputApi: {type: \"multiple\", difficulty: \"medium\", category: \"Science &amp; Nature\", question: \"How many planets are in our Solar System?\"}) {id, type difficulty category question}}";
 
         TriviaApi savedTrivia = tester.document(mutation)
                 .execute()
@@ -142,6 +142,7 @@ public class TriviaControllerTest {
 
         assertAll(
                 () -> assertNotNull(savedTrivia),
+                () -> assertEquals(savedTrivia.id(), trivia.id()),
                 () -> assertEquals(trivia.category(), savedTrivia.category()),
                 () -> assertEquals(trivia.type(), savedTrivia.type()),
                 () -> assertEquals(trivia.difficulty(), savedTrivia.difficulty()),
