@@ -1,5 +1,6 @@
 package dev.sebsven.domain;
 
+import dev.sebsven.application.request.TriviaInputApi;
 import dev.sebsven.application.response.TriviaApi;
 import dev.sebsven.domain.response.TriviaResponse;
 import dev.sebsven.infrastructure.IncorrectAnswer;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static dev.sebsven.application.response.TriviaApi.toTriviaApi;
+import static dev.sebsven.infrastructure.entity.Trivia.toTrivia;
 
 @Service
 public class TriviaService {
@@ -68,5 +70,9 @@ public class TriviaService {
                 .stream()
                 .map(TriviaApi::toTriviaApi)
                 .toList();
+    }
+
+    public TriviaApi save(TriviaInputApi triviaInputApi) {
+        return toTriviaApi(triviaRepository.save(toTrivia(triviaInputApi)));
     }
 }

@@ -1,5 +1,6 @@
 package dev.sebsven.infrastructure.entity;
 
+import dev.sebsven.application.request.TriviaInputApi;
 import dev.sebsven.domain.response.TriviaDto;
 import dev.sebsven.infrastructure.IncorrectAnswer;
 import jakarta.persistence.*;
@@ -41,4 +42,21 @@ public class Trivia {
         return trivia;
     }
 
+
+    public static Trivia toTrivia(TriviaInputApi triviaInputApi) {
+        Trivia trivia = new Trivia();
+        trivia.setType(triviaInputApi.type());
+        trivia.setDifficulty(triviaInputApi.difficulty());
+        trivia.setCategory(triviaInputApi.category());
+        trivia.setQuestion(triviaInputApi.question());
+        trivia.setCorrectAnswer(triviaInputApi.correctAnswer());
+        trivia.setIncorrectAnswers(triviaInputApi.incorrectAnswers().stream()
+                .map(incorrectAnswer -> {
+                    IncorrectAnswer incorrectAnswerEntity = new IncorrectAnswer();
+                    incorrectAnswerEntity.setIncorrectAnswer(incorrectAnswer);
+                    return incorrectAnswerEntity;
+                })
+                .collect(Collectors.toList()));
+        return trivia;
+    }
 }

@@ -1,8 +1,10 @@
 package dev.sebsven.application.controller;
 
+import dev.sebsven.application.request.TriviaInputApi;
 import dev.sebsven.application.response.TriviaApi;
 import dev.sebsven.domain.TriviaService;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
@@ -36,5 +38,10 @@ public class TriviaController {
     @QueryMapping
     public List<TriviaApi> triviaByType(@Argument String type) {
         return triviaService.getByType(type);
+    }
+
+    @MutationMapping
+    public TriviaApi newTrivia(@Argument TriviaInputApi triviaInputApi) {
+      return triviaService.save(triviaInputApi);
     }
 }

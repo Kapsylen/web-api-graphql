@@ -2,9 +2,10 @@ package dev.sebsven.application.response;
 
 import dev.sebsven.infrastructure.IncorrectAnswer;
 import dev.sebsven.infrastructure.entity.Trivia;
+import lombok.Builder;
 
 import java.util.List;
-
+@Builder
 public record TriviaApi(
         Integer id,
         String type,

@@ -15,3 +15,16 @@ type Query {
     allTrivia: [TriviaApi]
     triviaByType(type: String): [TriviaApi]
 }
+
+input TriviaApiInput {
+    type: String!
+    difficulty: String!
+    category: String!
+    question: String!
+    correctAnswer: String
+    incorrectAnswers: [String]
+}
+
+type Mutation {
+    newTrivia(triviaInputApi: TriviaApiInput!): TriviaApi
+}
