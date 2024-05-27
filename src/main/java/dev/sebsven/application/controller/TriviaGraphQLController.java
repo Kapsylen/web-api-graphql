@@ -1,7 +1,7 @@
 package dev.sebsven.application.controller;
 
 import dev.sebsven.application.request.TriviaInputApi;
-import dev.sebsven.application.response.TriviaApi;
+import dev.sebsven.application.response.TriviaOutputApi;
 import dev.sebsven.domain.TriviaService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -12,17 +12,17 @@ import org.springframework.stereotype.Controller;
 import java.util.List;
 
 @Controller
-public class TriviaController {
+public class TriviaGraphQLController {
 
     private final TriviaService triviaService;
 
-    public TriviaController(TriviaService triviaService) {
+    public TriviaGraphQLController(TriviaService triviaService) {
         this.triviaService = triviaService;
     }
 
     @QueryMapping
-    public TriviaApi triviaById(@Argument Integer id) {
-        return triviaService.triviaById(id).orElse(null);
+    public TriviaOutputApi triviaById(@Argument Integer id) {
+        return triviaService.triviaById(id);
     }
 
     @SchemaMapping(typeName = "Query", value = "incorrectAnswers")
@@ -31,17 +31,17 @@ public class TriviaController {
     }
 
     @QueryMapping
-    public List<TriviaApi> allTrivia() {
-        return triviaService.getAllTrivia();
+    public List<TriviaOutputApi> allTrivia() {
+        return triviaService.getAllTrivia(null);
     }
 
     @QueryMapping
-    public List<TriviaApi> triviaByType(@Argument String type) {
+    public List<TriviaOutputApi> triviaByType(@Argument String type) {
         return triviaService.getByType(type);
     }
 
     @MutationMapping
-    public TriviaApi newTrivia(@Argument TriviaInputApi triviaInputApi) {
-      return triviaService.save(triviaInputApi);
+    public TriviaOutputApi newTrivia(@Argument TriviaInputApi triviaInputApi) {
+      return triviaService.create(triviaInputApi);
     }
 }

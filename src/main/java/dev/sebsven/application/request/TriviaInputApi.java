@@ -2,7 +2,6 @@ package dev.sebsven.application.request;
 
 import java.util.List;
 
-
 public record TriviaInputApi(
         String type,
         String difficulty,

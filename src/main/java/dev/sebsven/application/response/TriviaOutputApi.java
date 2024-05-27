@@ -3,10 +3,11 @@ package dev.sebsven.application.response;
 import dev.sebsven.infrastructure.IncorrectAnswer;
 import dev.sebsven.infrastructure.entity.Trivia;
 import lombok.Builder;
+import lombok.Value;
 
 import java.util.List;
 @Builder
-public record TriviaApi(
+public record TriviaOutputApi(
         Integer id,
         String type,
         String difficulty,
@@ -16,8 +17,8 @@ public record TriviaApi(
         List<String> incorrectAnswers
 ) {
 
-    public static TriviaApi toTriviaApi(Trivia trivia) {
-        return new TriviaApi(
+    public static TriviaOutputApi toTriviaApi(Trivia trivia) {
+        return new TriviaOutputApi(
                 trivia.getId(),
                 trivia.getType(),
                 trivia.getDifficulty(),
