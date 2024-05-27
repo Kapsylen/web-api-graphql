@@ -112,7 +112,7 @@ class TriviaRestControllerTest {
                 new TriviaOutputApi(1, "type1", "difficulty1", "1", "question1", "correctAnswer1", Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3")),
                 new TriviaOutputApi(2, "type2", "difficulty2", "1", "question2", "correctAnswer2", Arrays.asList("incorrectAnswer4", "incorrectAnswer5", "incorrectAnswer6"))
         );
-        given(triviaService.getAllByCategory("1")).willReturn(triviaOutputApiList);
+        given(triviaService.getAllTrivia("1")).willReturn(triviaOutputApiList);
 
         mvc.perform(MockMvcRequestBuilders
                         .get("/trivias")

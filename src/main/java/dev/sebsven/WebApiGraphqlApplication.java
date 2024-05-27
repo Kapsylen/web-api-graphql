@@ -22,7 +22,8 @@ public class WebApiGraphqlApplication {
     @Bean
     CommandLineRunner commandLineRunner() {
         return args -> {
-            triviaService.saveAll();
+
+            triviaService.saveAll("17");
 
         };
     }

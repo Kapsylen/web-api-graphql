@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static dev.sebsven.application.response.TriviaOutputApi.toTriviaApi;
 import static dev.sebsven.infrastructure.entity.Trivia.toTrivia;
@@ -27,9 +26,9 @@ public class TriviaService {
         this.triviaRepository = triviaRepository;
     }
 
-    private TriviaResponse getTriviaFromExternalApi() {
+    private TriviaResponse getTriviaFromExternalApi(String category) {
         return triviaClientBuilder
-                .baseUrl("https://opentdb.com/api.php?amount=10&category=17&difficulty=easy")
+                .baseUrl("https://opentdb.com/api.php?amount=10&category=" + category + "&difficulty=easy")
                 .build()
                 .get()
                 .accept(MediaType.APPLICATION_JSON)
@@ -37,9 +36,9 @@ public class TriviaService {
                 .body(TriviaResponse.class);
     }
 
-    public void saveAll() {
+    public void saveAll(String Category) {
         if(triviaRepository.findAll().isEmpty()){
-            var triviaEntities = getTriviaFromExternalApi().results().stream().map(Trivia::toTrivia).toList();
+            var triviaEntities = getTriviaFromExternalApi(Category).results().stream().map(Trivia::toTrivia).toList();
             triviaRepository.saveAll(triviaEntities);
         }
     }
@@ -66,14 +65,22 @@ public class TriviaService {
     }
 
     public List<TriviaOutputApi> getAllTrivia(String category) {
-        if (category != null) {
-            return triviaRepository.findByCategory(category)
+        List<Trivia> triviaList = category != null ?
+                triviaRepository.findByCategory(category) : triviaRepository.findAll();
+
+        if (category != null && triviaList.isEmpty()) {
+            return triviaRepository.saveAll(
+                            getTriviaFromExternalApi(category)
+                                    .results()
+                                    .stream()
+                                    .map(Trivia::toTrivia)
+                                    .toList())
                     .stream()
                     .map(TriviaOutputApi::toTriviaApi)
                     .toList();
         }
-        return triviaRepository.findAll()
-                .stream()
+
+        return triviaList.stream()
                 .map(TriviaOutputApi::toTriviaApi)
                 .toList();
     }
@@ -98,9 +105,5 @@ public class TriviaService {
          return  triviaInputApi.incorrectAnswers().stream().filter(incorrectAnswer::equals).findFirst().orElse(incorrectAnswer.getIncorrectAnswer());
         }).toList();
         return toTriviaApi(triviaRepository.save(trivia));
-    }
-
-    public List<TriviaOutputApi> getAllByCategory(String category) {
-       return triviaRepository.findByCategory(category).stream().map(TriviaOutputApi::toTriviaApi).collect(Collectors.toList());
     }
 }

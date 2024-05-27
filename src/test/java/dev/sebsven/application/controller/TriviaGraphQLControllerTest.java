@@ -1,6 +1,5 @@
-package dev.sebsven;
+package dev.sebsven.application.controller;
 
-import dev.sebsven.application.controller.TriviaGraphQLController;
 import dev.sebsven.application.response.TriviaOutputApi;
 import dev.sebsven.domain.TriviaService;
 import org.junit.jupiter.api.Test;
