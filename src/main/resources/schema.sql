@@ -4,6 +4,7 @@ CREATE TABLE trivia
     type          VARCHAR(255),
     difficulty    VARCHAR(255),
     category      VARCHAR(255),
+    categoryId    VARCHAR(255),
     question      VARCHAR(255),
     correctAnswer VARCHAR(255)
 );

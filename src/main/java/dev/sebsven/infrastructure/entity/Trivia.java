@@ -19,17 +19,19 @@ public class Trivia {
     String type;
     String difficulty;
     String category;
+    String categoryId;
     String question;
     String correctAnswer;
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<IncorrectAnswer> incorrectAnswers;
 
 
-    public static Trivia toTrivia(TriviaDto triviaDto) {
+    public static Trivia toTrivia(TriviaDto triviaDto, String categoryId) {
         Trivia trivia = new Trivia();
         trivia.setType(triviaDto.type());
         trivia.setDifficulty(triviaDto.difficulty());
         trivia.setCategory(triviaDto.category());
+        trivia.setCategoryId(categoryId);
         trivia.setQuestion(triviaDto.question());
         trivia.setCorrectAnswer(triviaDto.correct_answer());
         trivia.setIncorrectAnswers(triviaDto.incorrect_answers().stream()
@@ -48,6 +50,7 @@ public class Trivia {
         trivia.setType(triviaInputApi.type());
         trivia.setDifficulty(triviaInputApi.difficulty());
         trivia.setCategory(triviaInputApi.category());
+        trivia.setCategoryId(triviaInputApi.categoryId());
         trivia.setQuestion(triviaInputApi.question());
         trivia.setCorrectAnswer(triviaInputApi.correctAnswer());
         trivia.setIncorrectAnswers(triviaInputApi.incorrectAnswers().stream()

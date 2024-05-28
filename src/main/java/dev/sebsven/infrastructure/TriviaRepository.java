@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface TriviaRepository extends JpaRepository<Trivia, Integer> {
     List<Trivia> findByType(String type);
-    List<Trivia> findByCategory(String category);
+    List<Trivia> findByCategoryId(String category);
 }

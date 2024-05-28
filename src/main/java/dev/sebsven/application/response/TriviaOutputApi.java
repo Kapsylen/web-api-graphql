@@ -3,7 +3,6 @@ package dev.sebsven.application.response;
 import dev.sebsven.infrastructure.IncorrectAnswer;
 import dev.sebsven.infrastructure.entity.Trivia;
 import lombok.Builder;
-import lombok.Value;
 
 import java.util.List;
 @Builder

@@ -36,9 +36,9 @@ public class TriviaService {
                 .body(TriviaResponse.class);
     }
 
-    public void saveAll(String Category) {
+    public void saveAll(String categoryId) {
         if(triviaRepository.findAll().isEmpty()){
-            var triviaEntities = getTriviaFromExternalApi(Category).results().stream().map(Trivia::toTrivia).toList();
+            var triviaEntities = getTriviaFromExternalApi(categoryId).results().stream().map(t -> toTrivia(t, categoryId)).toList();
             triviaRepository.saveAll(triviaEntities);
         }
     }
@@ -64,16 +64,16 @@ public class TriviaService {
                 .toList();
     }
 
-    public List<TriviaOutputApi> getAllTrivia(String category) {
-        List<Trivia> triviaList = category != null ?
-                triviaRepository.findByCategory(category) : triviaRepository.findAll();
+    public List<TriviaOutputApi> getAllTrivia(String categoryId) {
+        List<Trivia> triviaList = categoryId != null ?
+                triviaRepository.findByCategoryId(categoryId) : triviaRepository.findAll();
 
-        if (category != null && triviaList.isEmpty()) {
+        if (categoryId != null && triviaList.isEmpty()) {
             return triviaRepository.saveAll(
-                            getTriviaFromExternalApi(category)
+                            getTriviaFromExternalApi(categoryId)
                                     .results()
                                     .stream()
-                                    .map(Trivia::toTrivia)
+                                    .map(t -> toTrivia(t, categoryId))
                                     .toList())
                     .stream()
                     .map(TriviaOutputApi::toTriviaApi)

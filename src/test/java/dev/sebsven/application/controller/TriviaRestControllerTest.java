@@ -30,7 +30,7 @@ class TriviaRestControllerTest {
 
     @Test
     void when_post_trivia_then_should_return_200() throws Exception {
-        var triviaInputApi = new TriviaInputApi("type", "difficulty","category","question","correctAnswer", Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3"));
+        var triviaInputApi = new TriviaInputApi("type", "difficulty","category","10","question", "correctAnswer", Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3"));
         var createdTrivia = new TriviaOutputApi(1,"", "type", "difficulty","category","question", Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3"));
         given(triviaService.create(triviaInputApi)).willReturn(createdTrivia);
 
@@ -52,7 +52,7 @@ class TriviaRestControllerTest {
 
     @Test
     void when_get_trivia_by_id_then_should_return_200() throws Exception {
-        var triviaOutputApi = new TriviaOutputApi(1, "type", "difficulty", "category", "question", "correctAnswer", Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3"));
+        var triviaOutputApi = new TriviaOutputApi(1, "type", "difficulty", "category", "question", "correctAnswer",  Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3"));
         given(triviaService.triviaById(1)).willReturn(triviaOutputApi);
 
         mvc.perform(MockMvcRequestBuilders
@@ -84,7 +84,7 @@ class TriviaRestControllerTest {
 
     @Test
     void when_update_trivia_then_should_return_200() throws Exception {
-        var triviaInputApi = new TriviaInputApi("type", "easy", "9", "question", "correctAnswer", Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3"));
+        var triviaInputApi = new TriviaInputApi("type", "easy", "data science", "9", "question", "correctAnswer", Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3"));
         var updatedTrivia = new TriviaOutputApi(1, "type2", "hard", "9", "question2", "correctAnswer", Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3"));
         given(triviaService.update(1, triviaInputApi)).willReturn(updatedTrivia);
 
