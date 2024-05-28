@@ -26,9 +26,9 @@ public class TriviaService {
         this.triviaRepository = triviaRepository;
     }
 
-    private TriviaResponse getTriviaFromExternalApi(String category) {
+    private TriviaResponse getTriviaFromExternalApi(String category, String difficulty) {
         return triviaClientBuilder
-                .baseUrl("https://opentdb.com/api.php?amount=10&category=" + category + "&difficulty=easy")
+                .baseUrl("https://opentdb.com/api.php?amount=10&category=" + category + "&difficulty=" + difficulty)
                 .build()
                 .get()
                 .accept(MediaType.APPLICATION_JSON)
@@ -36,9 +36,9 @@ public class TriviaService {
                 .body(TriviaResponse.class);
     }
 
-    public void saveAll(String categoryId) {
+    public void saveAll(String categoryId, String difficulty) {
         if(triviaRepository.findAll().isEmpty()){
-            var triviaEntities = getTriviaFromExternalApi(categoryId).results().stream().map(t -> toTrivia(t, categoryId)).toList();
+            var triviaEntities = getTriviaFromExternalApi(categoryId, difficulty).results().stream().map(t -> toTrivia(t, categoryId, difficulty)).toList();
             triviaRepository.saveAll(triviaEntities);
         }
     }
@@ -64,16 +64,16 @@ public class TriviaService {
                 .toList();
     }
 
-    public List<TriviaOutputApi> getAllTrivia(String categoryId) {
+    public List<TriviaOutputApi> getAllTrivia(String categoryId, String difficulty) {
         List<Trivia> triviaList = categoryId != null ?
                 triviaRepository.findByCategoryId(categoryId) : triviaRepository.findAll();
 
         if (categoryId != null && triviaList.isEmpty()) {
             return triviaRepository.saveAll(
-                            getTriviaFromExternalApi(categoryId)
+                            getTriviaFromExternalApi(categoryId, difficulty)
                                     .results()
                                     .stream()
-                                    .map(t -> toTrivia(t, categoryId))
+                                    .map(t -> toTrivia(t, categoryId, difficulty))
                                     .toList())
                     .stream()
                     .map(TriviaOutputApi::toTriviaApi)

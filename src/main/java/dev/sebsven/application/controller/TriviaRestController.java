@@ -30,8 +30,12 @@ public class TriviaRestController {
 
     @GetMapping("/trivias")
     @ResponseStatus(value = HttpStatus.OK)
-    public List<TriviaOutputApi> getAllTrivia(@RequestParam(required = false) String category) {
-        return triviaService.getAllTrivia(category);
+    public List<TriviaOutputApi> getAllTrivia(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String difficulty
+
+    ) {
+        return triviaService.getAllTrivia(category, difficulty);
     }
 
     @DeleteMapping("/trivia/{id}")

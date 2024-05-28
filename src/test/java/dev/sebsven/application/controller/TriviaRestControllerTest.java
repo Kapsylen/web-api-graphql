@@ -109,10 +109,10 @@ class TriviaRestControllerTest {
     @Test
     void when_get_all_trivia_by_category_then_should_return_200() throws Exception {
         var triviaOutputApiList = Arrays.asList(
-                new TriviaOutputApi(1, "type1", "difficulty1", "1", "question1", "correctAnswer1", Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3")),
-                new TriviaOutputApi(2, "type2", "difficulty2", "1", "question2", "correctAnswer2", Arrays.asList("incorrectAnswer4", "incorrectAnswer5", "incorrectAnswer6"))
+                new TriviaOutputApi(1, "type1", "easy", "1", "question1", "correctAnswer1", Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3")),
+                new TriviaOutputApi(2, "type2", "easy", "1", "question2", "correctAnswer2", Arrays.asList("incorrectAnswer4", "incorrectAnswer5", "incorrectAnswer6"))
         );
-        given(triviaService.getAllTrivia("1")).willReturn(triviaOutputApiList);
+        given(triviaService.getAllTrivia("1", null)).willReturn(triviaOutputApiList);
 
         mvc.perform(MockMvcRequestBuilders
                         .get("/trivias")
@@ -122,7 +122,7 @@ class TriviaRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].type").value("type1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].difficulty").value("difficulty1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].difficulty").value("easy"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].category").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].question").value("question1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].correctAnswer").value("correctAnswer1"))
@@ -131,7 +131,7 @@ class TriviaRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].incorrectAnswers.[2]").value("incorrectAnswer3"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[1].id").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[1].type").value("type2"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].difficulty").value("difficulty2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].difficulty").value("easy"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[1].category").value("1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[1].question").value("question2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[1].correctAnswer").value("correctAnswer2"))

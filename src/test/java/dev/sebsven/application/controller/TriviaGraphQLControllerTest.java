@@ -64,7 +64,7 @@ public class TriviaGraphQLControllerTest {
                         .build()
         );
 
-        Mockito.when(service.getAllTrivia(null)).thenReturn(expectedTriviaList);
+        Mockito.when(service.getAllTrivia(null, null)).thenReturn(expectedTriviaList);
 
         String query = "{allTrivia {id category type}}";
         List<TriviaOutputApi> triviaList = tester.document(query)

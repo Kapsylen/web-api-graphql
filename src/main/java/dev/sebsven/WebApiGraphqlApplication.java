@@ -23,7 +23,7 @@ public class WebApiGraphqlApplication {
     CommandLineRunner commandLineRunner() {
         return args -> {
 
-            triviaService.saveAll("17");
+            triviaService.saveAll("17", "easy");
 
         };
     }

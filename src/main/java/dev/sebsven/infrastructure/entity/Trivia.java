@@ -26,10 +26,10 @@ public class Trivia {
     private List<IncorrectAnswer> incorrectAnswers;
 
 
-    public static Trivia toTrivia(TriviaDto triviaDto, String categoryId) {
+    public static Trivia toTrivia(TriviaDto triviaDto, String categoryId, String difficulty) {
         Trivia trivia = new Trivia();
         trivia.setType(triviaDto.type());
-        trivia.setDifficulty(triviaDto.difficulty());
+        trivia.setDifficulty(difficulty);
         trivia.setCategory(triviaDto.category());
         trivia.setCategoryId(categoryId);
         trivia.setQuestion(triviaDto.question());
