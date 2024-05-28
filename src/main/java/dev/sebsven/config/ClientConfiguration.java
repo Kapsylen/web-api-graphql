@@ -9,7 +9,9 @@ import org.springframework.web.client.RestClient;
 public class ClientConfiguration {
 
     @Bean
-    public RestClient.Builder trivialRestClientBuilder() {
-        return RestClient.builder();
+    public RestClient trivialRestClientBuilder() {
+        return RestClient.builder()
+                .baseUrl("https://opentdb.com/api.php")
+                .build();
     }
 }

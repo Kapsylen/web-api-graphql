@@ -112,10 +112,11 @@ class TriviaRestControllerTest {
                 new TriviaOutputApi(1, "type1", "easy", "1", "question1", "correctAnswer1", Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3")),
                 new TriviaOutputApi(2, "type2", "easy", "1", "question2", "correctAnswer2", Arrays.asList("incorrectAnswer4", "incorrectAnswer5", "incorrectAnswer6"))
         );
-        given(triviaService.getAllTrivia("1", null)).willReturn(triviaOutputApiList);
+        given(triviaService.getAllTrivia("10", "1", null)).willReturn(triviaOutputApiList);
 
         mvc.perform(MockMvcRequestBuilders
                         .get("/trivias")
+                        .param("amount", "10")
                         .param("category", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

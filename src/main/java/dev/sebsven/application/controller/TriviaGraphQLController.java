@@ -32,7 +32,7 @@ public class TriviaGraphQLController {
 
     @QueryMapping
     public List<TriviaOutputApi> allTrivia() {
-        return triviaService.getAllTrivia(null, null);
+        return triviaService.getAllTrivia("10", null, null);
     }
 
     @QueryMapping

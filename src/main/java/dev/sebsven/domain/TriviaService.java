@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
+import java.util.Objects;
 
 import static dev.sebsven.application.response.TriviaOutputApi.toTriviaApi;
 import static dev.sebsven.infrastructure.entity.Trivia.toTrivia;
@@ -18,27 +19,30 @@ import static dev.sebsven.infrastructure.entity.Trivia.toTrivia;
 @Service
 public class TriviaService {
 
-    private final RestClient.Builder triviaClientBuilder;
+    private final RestClient triviaClient;
     private final TriviaRepository triviaRepository;;
 
-    public TriviaService(RestClient.Builder triviaClientBuilder, TriviaRepository triviaRepository) {
-        this.triviaClientBuilder = triviaClientBuilder;
+    public TriviaService(RestClient triviaClient, TriviaRepository triviaRepository) {
+        this.triviaClient = triviaClient;
         this.triviaRepository = triviaRepository;
     }
 
-    private TriviaResponse getTriviaFromExternalApi(String category, String difficulty) {
-        return triviaClientBuilder
-                .baseUrl("https://opentdb.com/api.php?amount=10&category=" + category + "&difficulty=" + difficulty)
-                .build()
+    private TriviaResponse getTriviaFromExternalApi(String amount, String category, String difficulty) {
+        return triviaClient
                 .get()
+                .uri(buildUri -> buildUri
+                        .queryParam("amount", amount)
+                        .queryParam("category", category)
+                        .queryParam("difficulty", difficulty)
+                        .build())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .body(TriviaResponse.class);
     }
 
-    public void saveAll(String categoryId, String difficulty) {
+    public void saveAll(String amount, String categoryId, String difficulty) {
         if(triviaRepository.findAll().isEmpty()){
-            var triviaEntities = getTriviaFromExternalApi(categoryId, difficulty).results().stream().map(t -> toTrivia(t, categoryId, difficulty)).toList();
+            var triviaEntities = getTriviaFromExternalApi(amount, categoryId, difficulty).results().stream().map(t -> toTrivia(t, categoryId, difficulty)).toList();
             triviaRepository.saveAll(triviaEntities);
         }
     }
@@ -64,13 +68,13 @@ public class TriviaService {
                 .toList();
     }
 
-    public List<TriviaOutputApi> getAllTrivia(String categoryId, String difficulty) {
+    public List<TriviaOutputApi> getAllTrivia(String amount, String categoryId, String difficulty) {
         List<Trivia> triviaList = categoryId != null ?
                 triviaRepository.findByCategoryId(categoryId) : triviaRepository.findAll();
 
         if (categoryId != null && triviaList.isEmpty()) {
             return triviaRepository.saveAll(
-                            getTriviaFromExternalApi(categoryId, difficulty)
+                            getTriviaFromExternalApi(amount, categoryId, difficulty)
                                     .results()
                                     .stream()
                                     .map(t -> toTrivia(t, categoryId, difficulty))
