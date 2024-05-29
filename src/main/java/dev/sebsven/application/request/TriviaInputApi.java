@@ -1,7 +1,10 @@
 package dev.sebsven.application.request;
 
+import lombok.Builder;
+
 import java.util.List;
 
+@Builder
 public record TriviaInputApi(
         String type,
         String difficulty,

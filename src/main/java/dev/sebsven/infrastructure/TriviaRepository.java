@@ -11,4 +11,6 @@ import java.util.List;
 public interface TriviaRepository extends JpaRepository<Trivia, Integer> {
     List<Trivia> findByType(String type);
     List<Trivia> findByCategoryId(String category);
+    List<Trivia> findByDifficulty(String difficulty);
+    List<Trivia> findByDifficultyAndCategory(String difficulty, String category);
 }

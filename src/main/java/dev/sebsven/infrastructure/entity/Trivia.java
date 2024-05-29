@@ -4,7 +4,10 @@ import dev.sebsven.application.request.TriviaInputApi;
 import dev.sebsven.domain.response.TriviaDto;
 import dev.sebsven.infrastructure.IncorrectAnswer;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +15,9 @@ import java.util.stream.Collectors;
 @Data
 @Entity
 @Table(name = "trivia")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Trivia {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
