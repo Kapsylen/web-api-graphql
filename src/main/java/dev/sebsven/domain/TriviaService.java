@@ -3,6 +3,8 @@ package dev.sebsven.domain;
 import dev.sebsven.application.request.TriviaInputApi;
 import dev.sebsven.application.response.TriviaOutputApi;
 import dev.sebsven.domain.client.TriviaApi;
+import dev.sebsven.domain.error.ErrorCode;
+import dev.sebsven.domain.error.ResourceNotFoundException;
 import dev.sebsven.infrastructure.IncorrectAnswer;
 import dev.sebsven.infrastructure.TriviaRepository;
 import dev.sebsven.infrastructure.entity.Trivia;
@@ -10,7 +12,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static dev.sebsven.application.response.TriviaOutputApi.toTriviaApi;
 import static dev.sebsven.infrastructure.entity.Trivia.toTrivia;
@@ -36,7 +37,7 @@ public class TriviaService {
 
     public TriviaOutputApi triviaById(Integer id) {
         return toTriviaApi(triviaRepository.findById(id)
-                .orElseThrow(RuntimeException::new));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND, "Trivia not found")));
     }
 
     public List<TriviaOutputApi> getByType(String type) {
@@ -48,7 +49,7 @@ public class TriviaService {
 
     public List<String> getIncorrectAnswers(Integer id) {
         var trivia = triviaRepository.findById(id);
-        return trivia.orElseThrow(RuntimeException::new)
+        return trivia.orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND, "Trivia not found"))
                 .getIncorrectAnswers()
                 .stream()
                 .map(IncorrectAnswer::getIncorrectAnswer)
@@ -73,13 +74,13 @@ public class TriviaService {
 
     public void delete(Integer id) {
         Trivia trivia = triviaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Trivia not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND, "Trivia not found"));
         triviaRepository.delete(trivia);
     }
 
     public TriviaOutputApi update(Integer id, TriviaInputApi triviaInputApi) {
         Trivia trivia = triviaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Trivia not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESOURCE_NOT_FOUND, "Trivia not found"));
         trivia.setType(triviaInputApi.type());
         trivia.setDifficulty(triviaInputApi.difficulty());
         trivia.setCategory(triviaInputApi.category());
