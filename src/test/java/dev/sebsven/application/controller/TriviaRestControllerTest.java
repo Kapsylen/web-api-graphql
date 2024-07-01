@@ -4,7 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.sebsven.application.request.TriviaInputApi;
 import dev.sebsven.application.response.TriviaOutputApi;
 import dev.sebsven.domain.TriviaService;
+import dev.sebsven.domain.error.ErrorCode;
+import dev.sebsven.domain.error.ResourceNotFoundException;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,9 +18,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.io.NotActiveException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -50,6 +59,39 @@ class TriviaRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.incorrectAnswers").exists());
     }
 
+   @Test
+    public void whenPostRequest_create_trivia_api_given_invalid_number_of_incorrect_answers_then_return_bad_request_with_correct_error_message() throws Exception {
+        var triviaInputApi = new TriviaInputApi("type", "difficulty","category","10","question", "correctAnswer", Arrays.asList("Rome", "Berlin", "London", "Amsterdam"));
+        String triviaRequest = new ObjectMapper().writeValueAsString(triviaInputApi);
+        mvc.perform(MockMvcRequestBuilders.post("/trivia")
+                        .content(triviaRequest)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.apierror.status", Is.is("BAD_REQUEST")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.apierror.message", Is.is("Validation error")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.apierror.subErrors.[0].rejectedValue[0]", Is.is("Rome")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.apierror.subErrors.[0].rejectedValue[1]", Is.is("Berlin")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.apierror.subErrors.[0].rejectedValue[2]", Is.is("London")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.apierror.subErrors.[0].rejectedValue[3]", Is.is("Amsterdam")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.apierror.subErrors.[0].message", Is.is("size must be between 3 and 3")));
+
+    }
+
+    @Test
+    public void whenPostRequest_create_trivia_api_given_invalid_number_of_incorrect_answers_and_values_is_empty_then_return_bad_request_with_correct_error_message() throws Exception {
+        var triviaInputApi = new TriviaInputApi("type", "difficulty","category","10","question", "correctAnswer", Arrays.asList("London", "Amsterdam", ""));
+        String triviaRequest = new ObjectMapper().writeValueAsString(triviaInputApi);
+        mvc.perform(MockMvcRequestBuilders.post("/trivia")
+                        .content(triviaRequest)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.apierror.status", Is.is("BAD_REQUEST")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.apierror.message", Is.is("Validation error")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.apierror.subErrors.[0].message", Is.is("List cannot contain empty fields")));
+
+    }
+
+
     @Test
     void when_get_trivia_by_id_then_should_return_200() throws Exception {
         var triviaOutputApi = new TriviaOutputApi(1, "type", "difficulty", "category", "question", "correctAnswer",  Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3"));
@@ -71,6 +113,16 @@ class TriviaRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.incorrectAnswers.[2]").value("incorrectAnswer3"));
     }
 
+
+    @Test
+    void when_get_trivia_by_id_given_not_exist_then_should_return_404() throws Exception {
+        given(triviaService.triviaById(1)).willThrow(ResourceNotFoundException.class);
+
+        mvc.perform(MockMvcRequestBuilders
+                .get("/trivia/{id}", 1))
+                .andExpect(status().isNotFound());
+    }
+
     @Test
     void when_delete_trivia_then_should_return_204() throws Exception {
         TriviaOutputApi triviaOutputApi = new TriviaOutputApi(1, "type", "difficulty", "category", "question", "correctAnswer", Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3"));
@@ -81,6 +133,17 @@ class TriviaRestControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
+    @Test
+    void when_delete_trivia_by_id_given_not_exist_then_should_return_404() throws Exception {
+
+        doThrow(ResourceNotFoundException.class).when(triviaService).triviaById(1);
+
+        mvc.perform(MockMvcRequestBuilders
+                        .get("/trivia/{id}", 1))
+                .andExpect(status().isNotFound());
+    }
+
 
     @Test
     void when_update_trivia_then_should_return_200() throws Exception {
@@ -104,6 +167,22 @@ class TriviaRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.incorrectAnswers.[0]").value(updatedTrivia.incorrectAnswers().get(0)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.incorrectAnswers.[1]").value(updatedTrivia.incorrectAnswers().get(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.incorrectAnswers.[2]").value(updatedTrivia.incorrectAnswers().get(2)));
+    }
+
+    @Test
+    void when_update_trivia_given_not_exist_then_should_return_404() throws Exception {
+        var triviaInputApi = new TriviaInputApi("type", "easy", "data science", "9", "question", "correctAnswer", Arrays.asList("incorrectAnswer1", "incorrectAnswer2", "incorrectAnswer3"));
+        String triviaRequest = new ObjectMapper().writeValueAsString(triviaInputApi);
+        given(triviaService.update(1, triviaInputApi)).willThrow(ResourceNotFoundException.class);
+
+
+        mvc.perform(MockMvcRequestBuilders
+                        .put("/trivia/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(triviaRequest))
+                .andExpect(status().isNotFound());
+
     }
 
     @Test

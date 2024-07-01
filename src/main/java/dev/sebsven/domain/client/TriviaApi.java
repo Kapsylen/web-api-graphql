@@ -2,9 +2,7 @@ package dev.sebsven.domain.client;
 
 import dev.sebsven.domain.response.TriviaResponse;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 

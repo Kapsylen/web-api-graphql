@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import jakarta.validation.ConstraintViolation;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import lombok.Data;
@@ -39,7 +40,7 @@ public class ApiError {
         this();
         this.status = status;
         this.message = "Unexpected error";
-        this.debugMessage = ex.getLocalizedMessage();
+        this.debugMessage = Arrays.stream(ex.getStackTrace()).toString();
     }
 
     public ApiError(HttpStatus status, String message, Throwable ex) {
