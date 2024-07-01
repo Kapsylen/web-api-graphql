@@ -4,12 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.sebsven.application.request.TriviaInputApi;
 import dev.sebsven.application.response.TriviaOutputApi;
 import dev.sebsven.domain.TriviaService;
-import dev.sebsven.domain.error.ErrorCode;
 import dev.sebsven.domain.error.ResourceNotFoundException;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,11 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.io.NotActiveException;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
